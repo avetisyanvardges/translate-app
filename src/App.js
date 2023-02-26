@@ -24,11 +24,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const App = () => {
-    console.log(app)
+    // console.log(app)
     return (
         <Routes>
             <Route path="/" element={<Home/>}/>
-            <Route path="/language-details/:id" element={<LanguageDetails/>}/>
+            <Route path="/screen/:id" element={<LanguageDetails/>}/>
         </Routes>
     );
 };
