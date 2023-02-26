@@ -20,7 +20,7 @@ const data = [
     }
 ];
 
-const initialRowData = {key: '', en: '', hy: '', ru: '', ge: ''};
+const initialRowData = {key: '', en: {}, hy: {}, ru: {}, ge: {}};
 
 function useContainer() {
     const {id} = useParams();
@@ -44,6 +44,7 @@ function useContainer() {
         form,
         initialRowData,
         onChange,
+        id
     }
 }
 
