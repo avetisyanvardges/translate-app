@@ -1,0 +1,40 @@
+.home-page {
+  width: 100%;
+  height: 100%;
+
+  .main-content {
+    margin: 100px auto;
+    width: 100%;
+    max-width: 1440px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    .language-card {
+      margin: 10px;
+      border-radius: 15px;
+      width: 243px;
+      height: 100px;
+      background: linear-gradient(200deg,#0098e2,#6aeab2 120%);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      &:hover {
+        box-shadow: 0 15px 30px 0 rgb(118 118 118 / 23%);
+      }
+
+      .title {
+        font-size: 18px;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        color: white;
+      }
+
+      .type {
+        color: white;
+        font-style: italic;
+      }
+    }
+  }
+}
