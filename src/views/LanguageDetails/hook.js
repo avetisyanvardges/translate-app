@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form } from 'antd'
 import { isEmpty } from 'lodash'
 import translateText from '../../utils/translate'
-import { aryMethod } from 'lodash/fp/_mapping'
-
 const initialRowData = { key: '', en: {}, hy: {}, ru: {}, ge: {} }
 
 function useContainer({ setData, data }) {

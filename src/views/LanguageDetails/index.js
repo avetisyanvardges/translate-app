@@ -1,421 +1,149 @@
-import React, { useState } from 'react'
-import {
-  MinusCircleOutlined,
-  PlusOutlined,
-  RollbackOutlined,
-} from '@ant-design/icons'
-import { Button, Form, Input, Space, Table } from 'antd'
-import { Link } from 'react-router-dom'
-import { uniqueId } from 'lodash'
-import useContainer from './hook'
-import './style.scss'
+import {Form, Popconfirm, Table, Typography} from 'antd';
+import { useState } from 'react';
+import EditableCell from "./EditableCell";
+import './style.scss';
 
-const initialData = [
-  {
-    id: 1,
-    keyName: '',
-    en: '',
-    ru: '',
-    ge: '',
-    hy: '',
-  },
-]
+const originData = [];
+for (let i = 0; i < 100; i++) {
+    originData.push({
+        id: i.toString(),
+        keyName: 'key name',
+        en: 'english',
+        ru: 'russian',
+        ge: 'georgian',
+        hy: 'armenian',
+    });
+}
 
-function EditableCell({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) {
-  const inputNode = <Input />
+const  LanguageDetails = () => {
+    const [form] = Form.useForm();
+    const [data, setData] = useState(originData);
+    const [editingKey, setEditingKey] = useState('');
+    const isEditing = (record) => record.id === editingKey;
 
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{ margin: 0 }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
+    const edit = (record) => {
+        console.log(record)
+        form.setFieldsValue({
+            keyName: '',
+            en: '',
+            ru: '',
+            ge: '',
+            hy: '',
+            ...record,
+        });
+        setEditingKey(String(record.id));
+    };
+    const cancel = () => {
+        setEditingKey('');
+    };
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...data];
+            const index = newData.findIndex((item) => key === item.key);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+                setData(newData);
+                setEditingKey('');
+            } else {
+                newData.push(row);
+                setData(newData);
+                setEditingKey('');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
+    };
+    const columns = [
+        {
+            title: 'Key',
+            dataIndex: 'keyName',
+            width: '18%',
+            editable: true,
+        },
+        {
+            title: 'En',
+            dataIndex: 'en',
+            width: '18%',
+            editable: true,
+        },
+        {
+            title: 'Hy',
+            dataIndex: 'hy',
+            width: '18%',
+            editable: true,
+        },
+        {
+            title: 'Ru',
+            dataIndex: 'ru',
+            width: '18%',
+            editable: true,
+        },
+        {
+            title: 'Ge',
+            dataIndex: 'ge',
+            width: '18%',
+            editable: true,
+        },
+        {
+            title: 'operation',
+            dataIndex: 'operation',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return editable ? (
+                    <span>
+            <Typography.Link
+                onClick={() => save(record.key)}
+                style={{
+                    marginRight: 8,
+                }}
+            >
+              Save
+            </Typography.Link>
+            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+              <a>Cancel</a>
+            </Popconfirm>
+          </span>
+                ) : (
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        Edit
+                    </Typography.Link>
+                );
             },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  )
+        },
+    ];
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                inputType: 'text',
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditing(record),
+            }),
+        };
+    });
+    return (
+        <Form form={form} component={false}>
+            <Table
+                components={{body: {cell: EditableCell}}}
+                bordered
+                dataSource={data}
+                columns={mergedColumns}
+                rowKey='id'
+                rowClassName="editable-row"
+                pagination={{onChange: cancel}}
+            />
+        </Form>
+    );
 }
 
-function LanguageDetails() {
-  const [data, setData] = useState(initialData)
-
-  const { onChange, form, initialRowData, id, handleTranslate } = useContainer({
-    setData,
-    data,
-  })
-  const [editingId, setEditingId] = useState(0)
-
-  const isEditing = (record) => record.id === editingId
-  const exportData = () => {
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(initialRowData.en)
-    )}`
-    const link = document.createElement('a')
-    link.href = jsonString
-    link.download = 'data.json'
-
-    link.click()
-  }
-
-  const [count, setCount] = useState(2) // keep track of number of rows
-
-  const handleAddRow = () => {
-    edit(count + 1)
-    const newData = {
-      id: count.toString(),
-      keyName: '',
-      en: '',
-      ru: '',
-      ge: '',
-      hy: '',
-    }
-
-    setData([...data, newData])
-    setCount(count + 1)
-  }
-  const save = async (key) => {
-    try {
-      const newData = [...data]
-      const index = newData.findIndex((item) => key === item.id)
-      if (index > -1) {
-        const item = newData[index]
-        newData.splice(index, 1, {
-          ...item,
-        })
-        setData(newData)
-        setEditingId(0)
-      } else {
-        setData(newData)
-        setEditingId(0)
-      }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo)
-    }
-
-    console.log(data)
-  }
-
-  const columns = [
-    {
-      title: 'Key',
-      dataIndex: 'keyName',
-      key: 'keyName',
-      render: (text, record) => (
-        <input
-          value={text}
-          style={{
-            width: '100%',
-            height: 40,
-            padding: 5,
-            borderRadius: 8,
-            borderWidth: 1,
-          }}
-          onChange={(e) =>
-            setData(
-              data.map((item) =>
-                item.id === record.id
-                  ? { ...item, keyName: e.target.value }
-                  : item
-              )
-            )
-          }
-        />
-      ),
-    },
-    {
-      title: 'Value(EN)',
-      dataIndex: 'en',
-      key: 'en',
-      render: (text, record) => (
-        <input
-          value={text}
-          style={{
-            width: '100%',
-            height: 40,
-            padding: 5,
-            borderRadius: 8,
-            borderWidth: 1,
-          }}
-          onChange={(e) => {
-            setData(
-              data.map((item) =>
-                item.id === record.id ? { ...item, en: e.target.value } : item
-              )
-            )
-          }}
-          onBlur={(e) => {
-            console.log(e.target.value)
-            handleTranslate({
-              text: e.nativeEvent.target.value,
-              data: data,
-              setData: setData,
-            })
-          }}
-        />
-      ),
-    },
-    {
-      title: 'Value(RU)',
-      dataIndex: 'ru',
-      key: 'ru',
-      render: (text, record) => (
-        <input
-          value={text}
-          style={{
-            width: '100%',
-            height: 40,
-            padding: 5,
-            borderRadius: 8,
-            borderWidth: 1,
-          }}
-          onChange={(e) =>
-            setData(
-              data.map((item) =>
-                item.id === record.id ? { ...item, ru: e.target.value } : item
-              )
-            )
-          }
-        />
-      ),
-    },
-    {
-      title: 'Value(GE)',
-      dataIndex: 'ge',
-      key: 'ge',
-
-      render: (text, record) => (
-        <input
-          value={text}
-          style={{
-            width: '100%',
-            height: 40,
-            padding: 5,
-            borderRadius: 8,
-            borderWidth: 1,
-          }}
-          onChange={(e) =>
-            setData(
-              data.map((item) =>
-                item.id === record.id ? { ...item, ge: e.target.value } : item
-              )
-            )
-          }
-        />
-      ),
-    },
-    {
-      title: 'Value(HY)',
-      dataIndex: 'hy',
-      key: 'hy',
-      render: (text, record) => (
-        <input
-          value={text}
-          style={{
-            width: '100%',
-            height: 40,
-            padding: 5,
-            borderRadius: 8,
-            borderWidth: 1,
-          }}
-          onChange={(e) =>
-            setData(
-              data.map((item) =>
-                item.id === record.id ? { ...item, hy: e.target.value } : item
-              )
-            )
-          }
-        />
-      ),
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text, record) => (
-        <Space size="middle">
-          <Button type="link" onClick={save}>
-            Save
-          </Button>
-          <Button type="link" danger onClick={() => handleDeleteRow(record.id)}>
-            Delete
-          </Button>
-        </Space>
-      ),
-    },
-  ]
-
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col
-    }
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    }
-  })
-
-  const edit = (record) => {
-    setEditingId(record)
-  }
-
-  const handleDeleteRow = (id) => {
-    setData(data.filter((item) => item.id !== id))
-  }
-  return (
-    <div className="language-details-page">
-      <div className="top-content">
-        <Link to="/">
-          <Button icon={<RollbackOutlined />}>Back home</Button>
-        </Link>
-      </div>
-      {/* <div className="row" style={{ backgroundColor: '#5DBA2F' }}> */}
-      {/*   <span style={{ width: 220 }}>Key</span> */}
-      {/*   <span style={{ width: 220 }}>Value(EN)</span> */}
-      {/*   <span style={{ width: 220 }}>Value(HY)</span> */}
-      {/*   <span style={{ width: 220 }}>Value(RU)</span> */}
-      {/*   <span style={{ width: 220 }}>Value(GE)</span> */}
-      {/* </div> */}
-      {/* <Form */}
-      {/*   name="dynamic_form_nest_item" */}
-      {/*   onFinish={onChange} */}
-      {/*   autoComplete="off" */}
-      {/*   form={form} */}
-      {/* > */}
-      {/*   <Form.List name="data"> */}
-      {/*     {(fields, { add, remove }) => ( */}
-      {/*       <> */}
-      {/*         {fields.map(({ key, name, ...restField }) => ( */}
-      {/*           <Space */}
-      {/*             key={key} */}
-      {/*             className="row" */}
-      {/*             style={{ */}
-      {/*               display: 'flex', */}
-      {/*               marginBottom: 8, */}
-      {/*               alignItems: 'flex-start', */}
-      {/*             }} */}
-      {/*             align="baseline" */}
-      {/*           > */}
-      {/*             {Object.keys(initialRowData).map((item) => ( */}
-      {/*               <Form.Item */}
-      {/*                 {...restField} */}
-      {/*                 key={uniqueId(item)} */}
-      {/*                 name={[name, item]} */}
-      {/*                 className="formItemOption" */}
-      {/*                 rules={[{ required: true, message: 'Required field' }]} */}
-      {/*               > */}
-      {/*                 <Input */}
-      {/*                   style={{ width: 220 }} */}
-      {/*                   // disabled={item !== 'key' && isEmpty(initialRowData.key)} */}
-      {/*                   onBlur={({ */}
-      {/*                     nativeEvent: { */}
-      {/*                       target: { placeholder, value }, */}
-      {/*                     }, */}
-      {/*                   }) => { */}
-      {/*                     if (placeholder === 'key') { */}
-      {/*                       initialRowData.key = value */}
-      {/*                       Object.keys(initialRowData).map((it) => { */}
-      {/*                         if (typeof initialRowData[it] !== 'string') { */}
-      {/*                           initialRowData[it][`${id}.${value}`] = '' */}
-      {/*                         } */}
-      {/*                       }) */}
-      {/*                     } else { */}
-      {/*                       initialRowData[item][ */}
-      {/*                         `${id}.${initialRowData.key}` */}
-      {/*                       ] = value */}
-      {/*                     } */}
-      {/*                     console.log(initialRowData) */}
-      {/*                   }} */}
-      {/*                   placeholder={item} */}
-      {/*                 /> */}
-      {/*               </Form.Item> */}
-      {/*             ))} */}
-      {/*             <MinusCircleOutlined */}
-      {/*               onClick={() => remove(name)} */}
-      {/*               className="minusCircleOutlined" */}
-      {/*             /> */}
-      {/*           </Space> */}
-      {/*         ))} */}
-      {/*         <Form.Item className="bottom-content"> */}
-      {/*           <Button */}
-      {/*             className="add-row-button" */}
-      {/*             onClick={() => add()} */}
-      {/*             icon={<PlusOutlined />} */}
-      {/*           > */}
-      {/*             Add option */}
-      {/*           </Button> */}
-      {/*           <Button className="save-button" htmlType="submit"> */}
-      {/*             Save */}
-      {/*           </Button> */}
-      {/*         </Form.Item> */}
-      {/*       </> */}
-      {/*     )} */}
-      {/*   </Form.List> */}
-      {/* </Form> */}
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        dataSource={data}
-        columns={mergedColumns}
-        pagination={false}
-        rowClassName="editable-row"
-      />
-      <Form.Item className="bottom-content">
-        <Button
-          className="add-row-button"
-          onClick={handleAddRow}
-          icon={<PlusOutlined />}
-        >
-          Add option
-        </Button>
-        <Button
-          className="save-button"
-          onClick={() => {
-            const newData = data.reduce((acc, item, index) => {
-              let newObj = {}
-              Object.keys(item).map((key) => {
-                console.log(key, item)
-                if (key !== 'id' || key !== 'keyName') {
-                  newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
-                }
-              })
-              acc = newObj
-
-              return acc
-            }, {})
-            console.log(newData)
-          }}
-        >
-          Save
-        </Button>
-      </Form.Item>
-    </div>
-  )
-}
-
-export default LanguageDetails
+export default LanguageDetails;
