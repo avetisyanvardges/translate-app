@@ -19,8 +19,7 @@ const originData = [];
 
 const  LanguageDetails = () => {
     const [data, setData] = useState(originData);
-    const {id,handleTranslate} = useContainer({data, setData})
-    const [form] = Form.useForm();
+    const {id,handleTranslate,form} = useContainer({data, setData})
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
     const [count, setCount] = useState(1)
@@ -56,11 +55,11 @@ const  LanguageDetails = () => {
         setData([...data, newData])
         setCount(count + 1)
     }
-    const save = async (key) => {
+    const save = async (id) => {
         try {
             const row = await form.validateFields();
             const newData = [...data];
-            const index = newData.findIndex((item) => key === item.key);
+            const index = newData.findIndex((item) => id === item.id);
             if (index > -1) {
                 const item = newData[index];
                 newData.splice(index, 1, {
@@ -113,11 +112,12 @@ const  LanguageDetails = () => {
             title: 'operation',
             dataIndex: 'operation',
             render: (_, record) => {
+                console.log(record)
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
             <Typography.Link
-                onClick={() => save(record.key)}
+                onClick={() => save(record.id)}
                 style={{
                     marginRight: 8,
                 }}

@@ -13,7 +13,6 @@ const EditableCell = ({
                           handleTranslate,
                           ...restProps
                       }) => {
-    console.log(children);
     return (
         <td {...restProps}>
             {editing ? (
