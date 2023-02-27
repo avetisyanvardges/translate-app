@@ -1,25 +1,30 @@
-import {Form, Popconfirm, Table, Typography} from 'antd';
+import {Button, Form, Popconfirm, Table, Typography} from 'antd';
 import { useState } from 'react';
 import EditableCell from "./EditableCell";
 import './style.scss';
+import {PlusOutlined} from "@ant-design/icons";
+import useContainer from "./hook";
 
 const originData = [];
-for (let i = 0; i < 100; i++) {
-    originData.push({
-        id: i.toString(),
-        keyName: 'key name',
-        en: 'english',
-        ru: 'russian',
-        ge: 'georgian',
-        hy: 'armenian',
-    });
-}
+// for (let i = 0; i < 100; i++) {
+//     originData.push({
+//         id: i.toString(),
+//         keyName: 'key name',
+//         en: 'english',
+//         ru: 'russian',
+//         ge: 'georgian',
+//         hy: 'armenian',
+//     });
+// }
 
 const  LanguageDetails = () => {
-    const [form] = Form.useForm();
     const [data, setData] = useState(originData);
+    const {id,handleTranslate} = useContainer({data, setData})
+    const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const isEditing = (record) => record.id === editingKey;
+    const [count, setCount] = useState(1)
+
 
     const edit = (record) => {
         console.log(record)
@@ -36,6 +41,21 @@ const  LanguageDetails = () => {
     const cancel = () => {
         setEditingKey('');
     };
+
+    const handleAddRow = () => {
+        edit(count + 1)
+        const newData = {
+            id: count.toString(),
+            keyName: '',
+            en: '',
+            ru: '',
+            ge: '',
+            hy: '',
+        }
+        setEditingKey(String(count));
+        setData([...data, newData])
+        setCount(count + 1)
+    }
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -134,7 +154,7 @@ const  LanguageDetails = () => {
     return (
         <Form form={form} component={false}>
             <Table
-                components={{body: {cell: EditableCell}}}
+                components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
                 bordered
                 dataSource={data}
                 columns={mergedColumns}
@@ -142,6 +162,35 @@ const  LanguageDetails = () => {
                 rowClassName="editable-row"
                 pagination={{onChange: cancel}}
             />
+            <Form.Item className="bottom-content">
+                <Button
+                    className="add-row-button"
+                    onClick={handleAddRow}
+                    icon={<PlusOutlined />}
+                >
+                    Add option
+                </Button>
+                <Button
+                    className="save-button"
+                    onClick={() => {
+                        const newData = data.reduce((acc, item, index) => {
+                            let newObj = {}
+                            Object.keys(item).map((key) => {
+                                console.log(key, item)
+                                if (key !== 'id' || key !== 'keyName') {
+                                    newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
+                                }
+                            })
+                            acc = newObj
+
+                            return acc
+                        }, {})
+                        console.log(newData)
+                    }}
+                >
+                    Save
+                </Button>
+            </Form.Item>
         </Form>
     );
 }

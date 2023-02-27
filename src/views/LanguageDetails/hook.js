@@ -30,7 +30,9 @@ function useContainer({ setData, data }) {
   }, [data])
 
   useEffect(() => {
+    console.log(trData)
     const newData = data.map((item) => {
+      console.log(item.en)
       if (item.en === trData.en) {
         return {
           ...item,
@@ -40,6 +42,7 @@ function useContainer({ setData, data }) {
         return item
       }
     })
+    console.log(newData)
     setData(newData)
   }, [trData])
 
