@@ -3,10 +3,9 @@
   .top-content {
     width: 100%;
     max-width: 1440px;
-    margin: 20px auto;
+    margin: 10px;
   }
   .row {
-    background-color: rgba(0, 128, 0, 0.32);
     width: 100%;
     max-width: 1440px;
     margin: 20px auto;
@@ -14,7 +13,10 @@
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
-    padding-top: 20px;
+    padding: 10px;
+  }
+  .row span {
+    color: white;
   }
   .bottom-content {
     width: 100%;
