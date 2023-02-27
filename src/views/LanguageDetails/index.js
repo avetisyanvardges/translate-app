@@ -122,6 +122,13 @@ function LanguageDetails() {
       render: (text, record) => (
         <input
           value={text}
+          style={{
+            width: '100%',
+            height: 40,
+            padding: 5,
+            borderRadius: 8,
+            borderWidth: 1,
+          }}
           onChange={(e) =>
             setData(
               data.map((item) =>
@@ -141,6 +148,13 @@ function LanguageDetails() {
       render: (text, record) => (
         <input
           value={text}
+          style={{
+            width: '100%',
+            height: 40,
+            padding: 5,
+            borderRadius: 8,
+            borderWidth: 1,
+          }}
           onChange={(e) => {
             setData(
               data.map((item) =>
@@ -166,6 +180,13 @@ function LanguageDetails() {
       render: (text, record) => (
         <input
           value={text}
+          style={{
+            width: '100%',
+            height: 40,
+            padding: 5,
+            borderRadius: 8,
+            borderWidth: 1,
+          }}
           onChange={(e) =>
             setData(
               data.map((item) =>
@@ -180,9 +201,17 @@ function LanguageDetails() {
       title: 'Value(GE)',
       dataIndex: 'ge',
       key: 'ge',
+
       render: (text, record) => (
         <input
           value={text}
+          style={{
+            width: '100%',
+            height: 40,
+            padding: 5,
+            borderRadius: 8,
+            borderWidth: 1,
+          }}
           onChange={(e) =>
             setData(
               data.map((item) =>
@@ -200,6 +229,13 @@ function LanguageDetails() {
       render: (text, record) => (
         <input
           value={text}
+          style={{
+            width: '100%',
+            height: 40,
+            padding: 5,
+            borderRadius: 8,
+            borderWidth: 1,
+          }}
           onChange={(e) =>
             setData(
               data.map((item) =>
