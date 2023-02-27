@@ -56,7 +56,12 @@ function EditableCell({
 }
 
 function LanguageDetails() {
-  const { onChange, form, initialRowData, id } = useContainer()
+  const [data, setData] = useState(initialData)
+
+  const { onChange, form, initialRowData, id, handleTranslate } = useContainer({
+    setData,
+    data,
+  })
   const [editingId, setEditingId] = useState(0)
 
   const isEditing = (record) => record.id === editingId
@@ -71,7 +76,6 @@ function LanguageDetails() {
     link.click()
   }
 
-  const [data, setData] = useState(initialData)
   const [count, setCount] = useState(2) // keep track of number of rows
 
   const handleAddRow = () => {
@@ -92,7 +96,6 @@ function LanguageDetails() {
     try {
       const newData = [...data]
       const index = newData.findIndex((item) => key === item.id)
-      console.log(index)
       if (index > -1) {
         const item = newData[index]
         newData.splice(index, 1, {
@@ -138,13 +141,21 @@ function LanguageDetails() {
       render: (text, record) => (
         <input
           value={text}
-          onChange={(e) =>
+          onChange={(e) => {
             setData(
               data.map((item) =>
                 item.id === record.id ? { ...item, en: e.target.value } : item
               )
             )
-          }
+          }}
+          onBlur={(e) => {
+            console.log(e.target.value)
+            handleTranslate({
+              text: e.nativeEvent.target.value,
+              data: data,
+              setData: setData,
+            })
+          }}
         />
       ),
     },
