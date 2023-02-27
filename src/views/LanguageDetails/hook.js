@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Form } from 'antd'
 import { isEmpty } from 'lodash'
 import translateText from '../../utils/translate'
-const initialRowData = { key: '', en: {}, hy: {}, ru: {}, ge: {} }
 
 function useContainer({ setData, data }) {
   const { id } = useParams()
@@ -19,20 +18,11 @@ function useContainer({ setData, data }) {
     console.log('onchange', values)
   }
 
-  useEffect(() => {
-    if (isEmpty(data)) {
-      form.setFieldsValue({
-        data: [initialRowData],
-      })
-      return
-    }
-    form.setFieldsValue({ data })
-  }, [data])
 
   useEffect(() => {
     console.log(trData)
     const newData = data.map((item) => {
-      console.log(item.en)
+      console.log(item, trData)
       if (item.en === trData.en) {
         return {
           ...item,
@@ -46,9 +36,6 @@ function useContainer({ setData, data }) {
     setData(newData)
   }, [trData])
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
 
   const handleTranslate = async ({ text, data, setData }) => {
     console.log(text)
@@ -81,7 +68,6 @@ function useContainer({ setData, data }) {
 
   return {
     form,
-    initialRowData,
     onChange,
     id,
     handleTranslate,

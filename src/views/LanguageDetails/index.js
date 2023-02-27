@@ -176,7 +176,6 @@ const  LanguageDetails = () => {
                         const newData = data.reduce((acc, item, index) => {
                             let newObj = {}
                             Object.keys(item).map((key) => {
-                                console.log(key, item)
                                 if (key !== 'id' || key !== 'keyName') {
                                     newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
                                 }

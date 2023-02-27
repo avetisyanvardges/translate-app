@@ -13,7 +13,7 @@ const EditableCell = ({
                           handleTranslate,
                           ...restProps
                       }) => {
-    console.log(record)
+    console.log(children);
     return (
         <td {...restProps}>
             {editing ? (
@@ -23,32 +23,30 @@ const EditableCell = ({
                     rules={[{required: true, message: `Please Input ${title}!`}]}
                 >
                     <Input
-                        value={record[dataIndex]}
-                        onChange={(e) => {
-                            setData(
-                                data.map((item) =>
-                                    item.id === record.id
-                                        ? {...item, [e.target.id]: e.target.value}
-                                        : item
-                                )
-                            )
-                        }
-                        }
                         onBlur={(e) => {
                             if (dataIndex === 'en') {
+                                setData(
+                                    data.map((item) =>
+                                        item.id === record.id
+                                            ? {...item, [dataIndex]: e.nativeEvent.target.value}
+                                            : item
+                                    )
+                                )
                                 handleTranslate({
                                     text: e.nativeEvent.target.value,
                                     data: data,
                                     setData: setData,
                                 })
                             }
-                        }}/>
+                        }}
+                    />
                 </Form.Item>
             ) : (
                 children
             )}
         </td>
     );
+
 
 
 };
