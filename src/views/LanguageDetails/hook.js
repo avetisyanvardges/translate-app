@@ -1,50 +1,93 @@
-import {useParams} from "react-router-dom";
-import {useEffect} from "react";
-import {Form} from "antd";
-import {isEmpty} from "lodash";
+import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Form } from 'antd'
+import {concat, isEmpty, uniq} from 'lodash'
+import translateText from '../../utils/translate'
+import {child, get, getDatabase, ref} from "firebase/database";
 
-const data = [
-    {
-        key: 'Poxos',
-        hy: 'Poxos',
-        en: 'Poxos',
-        ru: 'Poxos',
-        ge: 'Poxos'
-    },
-    {
-        key: 'Martisros',
-        hy: 'Martisros',
-        en: 'Martisros',
-        ru: 'Martisros',
-        ge: 'Martisros'
+function useContainer({ setData, data }) {
+  const { id } = useParams()
+  const [form] = Form.useForm()
+  const [trData, setTrData] = useState({
+    en: '',
+    hy: '',
+    ru: '',
+    ge: '',
+  })
+
+  const onChange = (values) => {
+  }
+  function processText(text) {
+    // remove apostrophes
+    text = text.replaceAll("'", "");
+
+    // remove all syllables (assumes syllables are separated by hyphens)
+    text = text.replaceAll(/[-][^aeiouy]*[aeiouy]+[^aeiouy]*[-]/gi, '');
+
+    // replace all indents with underscores
+    text = text.replaceAll(/\s+/g, '_');
+
+    // generate maximum of 3 words
+    const words = text.split('_').slice(0, 3);
+
+    // remove trailing underscore, if any
+    if (words[words.length - 1] === '') {
+      words.pop();
     }
-];
 
-const initialRowData = {key: '', en: '', hy: '', ru: '', ge: ''};
+    // join the words and return
+    return words.join('_').toLowerCase();
+  }
 
-function useContainer() {
-    const {id} = useParams();
-    const [form] = Form.useForm();
 
-    const onChange = (values) => {
-        console.log('onchange', values)
-    }
-
-    useEffect(() => {
-        if(isEmpty(data)) {
-            form.setFieldsValue({
-                data: [initialRowData]
-            })
-            return;
+  useEffect(() => {
+    const newData = data.map((item) => {
+      if (item.en === trData.en) {
+        return {
+          ...item,
+          ...trData,
         }
-        form.setFieldsValue({data})
-    }, [data]);
+      } else {
+        return item
+      }
+    })
+    setData(newData)
+    form.setFieldsValue({...form.getFieldsValue(), ...trData})
+  }, [trData])
 
-    return {
-        form,
-        initialRowData,
-        onChange,
+
+  const handleTranslate = async ({ text, data, setData }) => {
+    let ruText, amText, geText
+    if (!isEmpty(text)) {
+      await translateText(text, 'ru')
+        .then((translations) => {
+          ruText = translations[0]
+        })
+        .catch((err) => console.error(err))
+      await translateText(text, 'ka')
+        .then((translations) => {
+          geText = translations[0]
+        })
+        .catch((err) => console.error(err))
+      await translateText(text, 'hy')
+        .then((translations) => {
+          amText = translations[0]
+        })
+        .catch((err) => console.error(err))
     }
+    await setTrData({ ...trData, en: text, ru: ruText, ge: geText, hy: amText, keyName: processText(text) })
+  }
+
+
+
+
+
+  return {
+    form,
+    onChange,
+    id,
+    handleTranslate,
+  }
 }
 
-export default useContainer;
+export default useContainer
