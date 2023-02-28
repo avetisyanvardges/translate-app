@@ -1,4 +1,4 @@
-import {Button, Form, Popconfirm, Table, Typography} from 'antd';
+import {Button, Col, Form, Popconfirm, Row, Table, Typography} from 'antd';
 import {useEffect, useState} from 'react';
 import EditableCell from "./EditableCell";
 import './style.scss';
@@ -123,6 +123,8 @@ const  LanguageDetails = () => {
                })
             })
 
+            console.log(newObj)
+
             const dbRef = ref(getDatabase());
 
             const updates = {
@@ -134,28 +136,121 @@ const  LanguageDetails = () => {
             console.log('Validate Failed:', errInfo);
         }
     };
-    const columns = [
 
+    const downloadJSON = (lang) => {
+        let mutationData = {}
+
+        data.map((item, index) => {
+            Object.keys(item).map((key) => {
+                if (key !== 'id' && key !== 'keyName' && key === lang) {
+                    mutationData[key] = !isEmpty(mutationData[key]) ? {
+                        ...mutationData[key],
+                        [`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]
+                    } : {[`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]}
+                }
+            })
+        })
+        if(!isEmpty(mutationData[lang])) {
+            const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+                JSON.stringify(mutationData[lang])
+            )}`;
+            const link = document.createElement("a");
+            link.href = jsonString;
+            link.download = `${id.trim().replaceAll(' ', '_').toLowerCase()}_${lang}.json`;
+
+            link.click();
+        }
+    };
+
+    const columns = [
         {
-            title: 'En',
+            title: () => {
+                return (
+                    <Row>
+                        <Col span={12}>
+                        <span>
+                            EN
+                        </span>
+                        </Col>
+                        <Col span={12}>
+                        <span onClick={() => downloadJSON('en')} style={{color: '#5dba2F', cursor: 'pointer'}}>
+                             download JSON
+                        </span>
+                        </Col>
+
+                    </Row>
+                );
+
+            },
             dataIndex: 'en',
             width: '22%',
             editable: true,
         },
         {
-            title: 'Hy',
+            title: () => {
+                return (
+                    <Row>
+                        <Col span={12}>
+                        <span>
+                            HY
+                        </span>
+                        </Col>
+                        <Col span={12}>
+                        <span onClick={() => downloadJSON('hy')} style={{color: '#5dba2F', cursor: 'pointer'}}>
+                             download JSON
+                        </span>
+                        </Col>
+
+                    </Row>
+                );
+
+            },
             dataIndex: 'hy',
             width: '22%',
             editable: true,
         },
         {
-            title: 'Ru',
+            title: () => {
+                return (
+                    <Row>
+                        <Col span={12}>
+                        <span>
+                            RU
+                        </span>
+                        </Col>
+                        <Col span={12}>
+                        <span onClick={() => downloadJSON('ru')} style={{color: '#5dba2F', cursor: 'pointer'}}>
+                             download JSON
+                        </span>
+                        </Col>
+
+                    </Row>
+                );
+
+            },
             dataIndex: 'ru',
             width: '22%',
             editable: true,
         },
         {
-            title: 'Ge',
+            title: () => {
+                return (
+                    <Row>
+                        <Col span={12}>
+                        <span>
+                            GE
+                        </span>
+                        </Col>
+                        <Col span={12}>
+                        <span onClick={() => downloadJSON('ge')} style={{color: '#5dba2F', cursor: 'pointer'}}>
+                             download JSON
+                        </span>
+                        </Col>
+
+                    </Row>
+                );
+
+            },
             dataIndex: 'ge',
             width: '22%',
             editable: true,

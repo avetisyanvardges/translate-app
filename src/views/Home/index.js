@@ -16,6 +16,7 @@ const Home = () => {
 
   return (
     <div className="home-page">
+      <h1 style={{textAlign: 'center',marginTop: 15}}>Screens</h1>
       <div className="main-content">
         {!isEmpty(screenList) &&
           screenList.map((item) => (
