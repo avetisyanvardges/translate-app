@@ -28,7 +28,7 @@ function useContainer({ setData, data }) {
     text = text.replaceAll(/\s+/g, '_');
 
     // generate maximum of 3 words
-    const words = text.split('_').slice(0, 3);
+    const words = text.split('_').slice(0, 4);
 
     // remove trailing underscore, if any
     if (words[words.length - 1] === '') {
