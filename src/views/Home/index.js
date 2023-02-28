@@ -20,12 +20,12 @@ const Home = () => {
         {!isEmpty(screenList) &&
           screenList.map((item) => (
             <Link
-              to={`/screen/${item.id}`}
+              to={`/screen/${item.name}`}
               key={item.id}
               className="language-card"
             >
               <h3 className="title">{item.name}</h3>
-              <p className="type">{item.id}</p>
+              {/* <p className="type">{item.id}</p> */}
             </Link>
           ))}
         <div className="language-card">
