@@ -6,6 +6,7 @@ import {PlusOutlined} from "@ant-design/icons";
 import useContainer from "./hook";
 import {isEmpty, uniqueId} from "lodash";
 import {child, get, getDatabase, ref, update} from "firebase/database";
+import Wrapper from "../Wrapper";
 
 
 // figd_M9c7hURQw6u4DiX3pfiEWnkBbGFWDZN7JTnEkYzz
@@ -306,44 +307,46 @@ const  LanguageDetails = () => {
         };
     });
     return (
-        <Form form={form} component={false}>
-            <Table
-                components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
-                bordered
-                dataSource={data}
-                columns={mergedColumns}
-                rowKey={'id'}
-                rowClassName="editable-row"
-                pagination={{onChange: cancel}}
-            />
-            <Form.Item className="bottom-content">
-                <Button
-                    className="add-row-button"
-                    onClick={handleAddRow}
-                    icon={<PlusOutlined />}
-                >
-                    Add option
-                </Button>
-                <Button
-                    className="save-button"
-                    onClick={() => {
-                        const newData = data.reduce((acc, item, index) => {
-                            let newObj = {}
-                            Object.keys(item).map((key) => {
-                                if (key !== 'id' || key !== 'keyName') {
-                                    newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
-                                }
-                            })
-                            acc = newObj
+       <Wrapper>
+           <Form form={form} component={false}>
+               <Table
+                   components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
+                   bordered
+                   dataSource={data}
+                   columns={mergedColumns}
+                   rowKey={'id'}
+                   rowClassName="editable-row"
+                   pagination={{onChange: cancel}}
+               />
+               <Form.Item className="bottom-content">
+                   <Button
+                       className="add-row-button"
+                       onClick={handleAddRow}
+                       icon={<PlusOutlined />}
+                   >
+                       Add option
+                   </Button>
+                   <Button
+                       className="save-button"
+                       onClick={() => {
+                           const newData = data.reduce((acc, item, index) => {
+                               let newObj = {}
+                               Object.keys(item).map((key) => {
+                                   if (key !== 'id' || key !== 'keyName') {
+                                       newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
+                                   }
+                               })
+                               acc = newObj
 
-                            return acc
-                        }, {})
-                    }}
-                >
-                    Save
-                </Button>
-            </Form.Item>
-        </Form>
+                               return acc
+                           }, {})
+                       }}
+                   >
+                       Save
+                   </Button>
+               </Form.Item>
+           </Form>
+       </Wrapper>
     );
 }
 
