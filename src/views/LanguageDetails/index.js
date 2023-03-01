@@ -22,7 +22,6 @@ const  LanguageDetails = () => {
 
     useEffect(()=>{
         const dbRef = ref(getDatabase());
-        console.log(id.replaceAll('_', ' '))
         get(child(dbRef, `screens/${id.replaceAll('_', ' ')}`)).then((snapshot) => {
             if (snapshot.exists() && String(snapshot.val()) !== '{}') {
                 const res = JSON.parse(snapshot.val())

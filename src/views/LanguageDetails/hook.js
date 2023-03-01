@@ -56,26 +56,32 @@ function useContainer({ setData, data }) {
   }, [trData])
 
 
-  const handleTranslate = async ({ text, data, setData }) => {
-    let ruText, amText, geText
+  const handleTranslate = async ({ text, language }) => {
+    let ruText, amText, geText, enText
     if (!isEmpty(text)) {
-      await translateText(text, 'ru')
-        .then((translations) => {
-          ruText = translations[0]
-        })
-        .catch((err) => console.error(err))
-      await translateText(text, 'ka')
-        .then((translations) => {
-          geText = translations[0]
-        })
-        .catch((err) => console.error(err))
-      await translateText(text, 'hy')
-        .then((translations) => {
-          amText = translations[0]
-        })
-        .catch((err) => console.error(err))
+      await translateText(text, language, 'en')
+          .then((translations) => {
+            enText = translations[0]
+          })
+          .catch((err) => console.error(err));
+      await translateText(text, language, 'ru')
+          .then((translations) => {
+            ruText = translations[0]
+          })
+          .catch((err) => console.error(err));
+      await translateText(text, language, 'ka')
+          .then((translations) => {
+            geText = translations[0]
+          })
+          .catch((err) => console.error(err));
+      await translateText(text, language, 'hy')
+          .then((translations) => {
+            amText = translations[0]
+          })
+          .catch((err) => console.error(err));
     }
-    await setTrData({ ...trData, en: text, ru: ruText, ge: geText, hy: amText, keyName: processText(text) })
+    await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: processText(text)})
+
   }
 
 
