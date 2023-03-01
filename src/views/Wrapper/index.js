@@ -8,11 +8,12 @@ const Wrapper = ({children}) => {
         menuItems, addScreenVisible, setAddScreenVisible, addInputValue, onChangeInputValue, saveNewScreen, pathname
     } = useContainer();
 
+
     return (
-        <div className='wrapper'>
-            <div className='menu-bar'>
+        <div className='wrapper' style={{height: window.innerHeight, backgroundColor: '#fdfeff'}}>
+            <div className='menu-bar' >
                 <div className='logo'>
-                    <h2 className='left'>Work more </h2><h2 className='right'>efficiently</h2>
+                    <h2 className='left' style={{color: '#8e969e'}}>Work more </h2><h2 className='right' style={{color: '#1E3045'}}>efficiently</h2>
                 </div>
                 <Menu selectedKeys={[pathname]} className="popover-dropdown" theme='light' mode='inline' items={menuItems}/>
                 <div className='add-screen'>
@@ -22,7 +23,7 @@ const Wrapper = ({children}) => {
                             <input value={addInputValue} onChange={onChangeInputValue} className='input'/>
                             <div className='buttons'>
                                 <button onClick={saveNewScreen}>Save</button>
-                                <button onClick={() => setAddScreenVisible(true)}>Cansel</button>
+                                <button onClick={() => setAddScreenVisible(true)}>Cancel</button>
                             </div>
                         </div>
                     }

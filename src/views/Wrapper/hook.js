@@ -14,8 +14,8 @@ function useContainer() {
 
     const menuItems = useMemo(() => screenList.map(item => {
         item = {
-            label: <Link className='item-link' to={`/screen/${item.name}`}>{item.name}</Link>,
-            key: `/screen/${item.name}`,
+            label: <Link className='item-link' to={`/screen/${item.name.trim().replaceAll(' ', '_')}`}>{item.name}</Link>,
+            key: `/screen/${item.name.trim().replaceAll(' ', '_')}`,
         }
         return item;
     }), [screenList]);
