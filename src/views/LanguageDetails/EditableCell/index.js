@@ -23,20 +23,17 @@ const EditableCell = ({
                 >
                     <Input
                         onBlur={(e) => {
-                            if (dataIndex === 'en') {
-                                setData(
-                                    data.map((item) =>
-                                        item.id === record.id
-                                            ? {...item, [dataIndex]: e.nativeEvent.target.value}
-                                            : item
-                                    )
+                            setData(
+                                data.map((item) =>
+                                    item.id === record.id
+                                        ? {...item, [dataIndex]: e.nativeEvent.target.value}
+                                        : item
                                 )
-                                handleTranslate({
-                                    text: e.nativeEvent.target.value,
-                                    data: data,
-                                    setData: setData,
-                                })
-                            }
+                            )
+                            handleTranslate({
+                                text: e.nativeEvent.target.value,
+                                language: dataIndex,
+                            })
                         }}
                     />
                 </Form.Item>
