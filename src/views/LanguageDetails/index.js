@@ -2,7 +2,7 @@ import {Button, Col, Form, Popconfirm, Row, Table, Typography} from 'antd';
 import {useEffect, useState} from 'react';
 import EditableCell from "./EditableCell";
 import './style.scss';
-import {DownloadOutlined, PlusOutlined} from "@ant-design/icons";
+import {DownloadOutlined, PlusOutlined, TranslationOutlined} from "@ant-design/icons";
 import useContainer from "./hook";
 import {isEmpty, uniqueId} from "lodash";
 import {child, get, getDatabase, ref, update} from "firebase/database";
@@ -120,7 +120,6 @@ const  LanguageDetails = () => {
             newData.map((item, index)=>{
                Object.keys(item).map((key)=>{
                    if(key !== 'id' && key !== 'keyName'){
-                       console.log(item, "ITEM")
                        newObj[key] = !isEmpty(newObj[key]) ? {...newObj[key], [`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]} : {[`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]}
                    }
                })
@@ -331,7 +330,7 @@ const  LanguageDetails = () => {
        <Wrapper>
            <Form form={form} component={false}>
                <Table
-                   components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
+                   components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} form={form} />}}}
                    bordered
                    dataSource={data}
                    columns={mergedColumns}
