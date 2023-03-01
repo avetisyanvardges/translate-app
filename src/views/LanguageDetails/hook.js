@@ -80,7 +80,7 @@ function useContainer({ setData, data }) {
           })
           .catch((err) => console.error(err));
     }
-    await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: processText(text)})
+    await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: processText(enText)})
 
   }
 
