@@ -1,57 +1,23 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { isEmpty } from 'lodash'
-import useContainer from './hook'
+import Wrapper from "../Wrapper";
 import './style.scss'
 
-const Home = () => {
-  const {
-    screenList,
-    addScreenVisible,
-    setAddScreenVisible,
-    addInputValue,
-    onChangeInputValue,
-    saveNewScreen,
-  } = useContainer()
 
-  return (
-    <div className="home-page">
-      <h1 style={{textAlign: 'center',marginTop: 15}}>Screens</h1>
-      <div className="main-content">
-        {!isEmpty(screenList) &&
-          screenList.map((item) => (
-            <Link
-              to={`/screen/${item.name}`}
-              key={item.id}
-              className="language-card"
-            >
-              <h3 className="title">{item.name}</h3>
-              {/* <p className="type">{item.id}</p> */}
-            </Link>
-          ))}
-        <div className="language-card">
-          {addScreenVisible ? (
-            <div
-              className="add-screen-content"
-              onClick={() => setAddScreenVisible(false)}
-            >
-              <p className="title">+ Add screen</p>
+
+// #8e969e
+// #1E3045
+// fdfeff
+// e3f4ff
+
+const Home = () => {
+    return (
+        <Wrapper>
+            <div style={{display:'flex', width: '100%',justifyContent: 'center'}}>
+                <h1 style={{color: '#1E3045'}}>Welcome!!</h1>
             </div>
-          ) : (
-            <div className="add-screen-form">
-              <input value={addInputValue} onChange={onChangeInputValue} />
-              <div className="buttons">
-                <button onClick={saveNewScreen}>Save</button>
-                <button onClick={() => setAddScreenVisible(true)}>
-                  Cansel
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
+            <div className="home-page" style={{backgroundSize: 'contain'}} />
+        </Wrapper>
+    )
 }
 
 export default Home

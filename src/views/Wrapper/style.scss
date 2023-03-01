@@ -1,0 +1,72 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+
+  .content {
+    width: 100%;
+  }
+
+  .menu-bar {
+    padding-bottom: 100px;
+    width: 320px;
+    border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
+
+    .logo {
+      margin-left: 10px;
+      display: flex;
+      width: 100%;
+
+      .left {
+        color: #0098e2;
+      }
+
+      .right {
+        margin-left: 5px;
+        color: rgb(93, 186, 47);
+      }
+    }
+
+    .add-screen {
+      width: 100%;
+      display: flex;
+      padding: 10px 10px 10px 20px;
+      align-items: center;
+      background-color: #1E3045;
+      color: #fdfeff;
+      cursor: pointer;
+
+      .add-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .input {
+          width: 250px;
+          height: 30px;
+          border-radius: 10px;
+          border: none;
+        }
+
+        .buttons {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+
+          button {
+            width: 100px;
+            height: 30px;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: white;
+            border-radius: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+:where(.css-dev-only-do-not-override-1km3mtt).ant-menu-light.ant-menu-root.ant-menu-inline, :where(.css-dev-only-do-not-override-1km3mtt).ant-menu-light.ant-menu-root.ant-menu-vertical{
+  border-inline-end: none;
+}

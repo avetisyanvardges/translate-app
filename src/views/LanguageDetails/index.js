@@ -2,10 +2,11 @@ import {Button, Col, Form, Popconfirm, Row, Table, Typography} from 'antd';
 import {useEffect, useState} from 'react';
 import EditableCell from "./EditableCell";
 import './style.scss';
-import {PlusOutlined} from "@ant-design/icons";
+import {DownloadOutlined, PlusOutlined} from "@ant-design/icons";
 import useContainer from "./hook";
 import {isEmpty, uniqueId} from "lodash";
 import {child, get, getDatabase, ref, update} from "firebase/database";
+import Wrapper from "../Wrapper";
 
 
 // figd_M9c7hURQw6u4DiX3pfiEWnkBbGFWDZN7JTnEkYzz
@@ -21,7 +22,7 @@ const  LanguageDetails = () => {
 
     useEffect(()=>{
         const dbRef = ref(getDatabase());
-        get(child(dbRef, `screens/${id}`)).then((snapshot) => {
+        get(child(dbRef, `screens/${id.replaceAll('_', ' ')}`)).then((snapshot) => {
             if (snapshot.exists()) {
                 const res = JSON.parse(snapshot.val())
                 const keys = Object.keys(res.en).reduce((acc, item, index)=>{
@@ -38,11 +39,12 @@ const  LanguageDetails = () => {
                 setCount(newData.length+1)
             } else {
                 console.log("No data available");
+                setData([])
             }
         }).catch((error) => {
             console.error(error);
         });
-    }, [])
+    }, [id])
 
     const edit = (record) => {
         console.log(record.id)
@@ -75,7 +77,7 @@ const  LanguageDetails = () => {
         const dbRef = ref(getDatabase());
 
         const updates = {
-            [`screens/${id}`]:JSON.stringify(mutationData)
+            [`screens/${id.replaceAll('_', ' ')}`]:JSON.stringify(mutationData)
         }
         update(dbRef, updates);
         setData(newData);
@@ -128,8 +130,9 @@ const  LanguageDetails = () => {
             const dbRef = ref(getDatabase());
 
             const updates = {
-                [`screens/${id}`]:JSON.stringify(newObj)
+                [`screens/${id.replaceAll('_', ' ')}`]:JSON.stringify(newObj)
             }
+
             update(dbRef, updates);
 
         } catch (errInfo) {
@@ -166,20 +169,26 @@ const  LanguageDetails = () => {
         {
             title: () => {
                 return (
-                    <Row>
+                    <Row style={{alignItems: 'center'}}>
                         <Col span={12}>
                         <span>
                             EN
                         </span>
                         </Col>
                         <Col span={12}>
-                        <span onClick={() => downloadJSON('en')} style={{color: '#5dba2F', cursor: 'pointer'}}>
-                             download JSON
-                        </span>
+                            <Button
+                                className="add-row-button"
+                                onClick={() => downloadJSON('en')}
+                                icon={<DownloadOutlined color={'#fdfeff'}/>}
+                                style={{backgroundColor: '#1E3045', color: '#fdfeff'}}
+                            >
+                                Download JSON
+                            </Button>
                         </Col>
-
                     </Row>
                 );
+
+
 
             },
             dataIndex: 'en',
@@ -189,18 +198,22 @@ const  LanguageDetails = () => {
         {
             title: () => {
                 return (
-                    <Row>
+                    <Row style={{alignItems: 'center'}}>
                         <Col span={12}>
                         <span>
                             HY
                         </span>
                         </Col>
                         <Col span={12}>
-                        <span onClick={() => downloadJSON('hy')} style={{color: '#5dba2F', cursor: 'pointer'}}>
-                             download JSON
-                        </span>
+                            <Button
+                                className="add-row-button"
+                                onClick={() => downloadJSON('hy')}
+                                icon={<DownloadOutlined color={'#fdfeff'}/>}
+                                style={{backgroundColor: '#1E3045', color: '#fdfeff'}}
+                            >
+                                Download JSON
+                            </Button>
                         </Col>
-
                     </Row>
                 );
 
@@ -212,18 +225,22 @@ const  LanguageDetails = () => {
         {
             title: () => {
                 return (
-                    <Row>
+                    <Row style={{alignItems: 'center'}}>
                         <Col span={12}>
                         <span>
                             RU
                         </span>
                         </Col>
                         <Col span={12}>
-                        <span onClick={() => downloadJSON('ru')} style={{color: '#5dba2F', cursor: 'pointer'}}>
-                             download JSON
-                        </span>
+                            <Button
+                                className="add-row-button"
+                                onClick={() => downloadJSON('ru')}
+                                icon={<DownloadOutlined color={'#fdfeff'}/>}
+                                style={{backgroundColor: '#1E3045', color: '#fdfeff'}}
+                            >
+                                Download JSON
+                            </Button>
                         </Col>
-
                     </Row>
                 );
 
@@ -235,18 +252,22 @@ const  LanguageDetails = () => {
         {
             title: () => {
                 return (
-                    <Row>
+                    <Row style={{alignItems: 'center'}}>
                         <Col span={12}>
                         <span>
                             GE
                         </span>
                         </Col>
                         <Col span={12}>
-                        <span onClick={() => downloadJSON('ge')} style={{color: '#5dba2F', cursor: 'pointer'}}>
-                             download JSON
-                        </span>
+                            <Button
+                                className="add-row-button"
+                                onClick={() => downloadJSON('ge')}
+                                icon={<DownloadOutlined color={'#fdfeff'}/>}
+                                style={{backgroundColor: '#1E3045', color: '#fdfeff'}}
+                            >
+                                Download JSON
+                            </Button>
                         </Col>
-
                     </Row>
                 );
 
@@ -306,44 +327,47 @@ const  LanguageDetails = () => {
         };
     });
     return (
-        <Form form={form} component={false}>
-            <Table
-                components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
-                bordered
-                dataSource={data}
-                columns={mergedColumns}
-                rowKey={'id'}
-                rowClassName="editable-row"
-                pagination={{onChange: cancel}}
-            />
-            <Form.Item className="bottom-content">
-                <Button
-                    className="add-row-button"
-                    onClick={handleAddRow}
-                    icon={<PlusOutlined />}
-                >
-                    Add option
-                </Button>
-                <Button
-                    className="save-button"
-                    onClick={() => {
-                        const newData = data.reduce((acc, item, index) => {
-                            let newObj = {}
-                            Object.keys(item).map((key) => {
-                                if (key !== 'id' || key !== 'keyName') {
-                                    newObj[key] = { [`${id}.${item.keyName}`]: item[key] }
-                                }
-                            })
-                            acc = newObj
+       <Wrapper>
+           <Form form={form} component={false}>
+               <Table
+                   components={{body: {cell: (props) => <EditableCell {...props} handleTranslate={handleTranslate} data={data} setData={setData} />}}}
+                   bordered
+                   dataSource={data}
+                   columns={mergedColumns}
+                   rowKey={'id'}
+                   rowClassName="editable-row"
+                   pagination={false}
+               />
+               <Form.Item className="bottom-content" style={{padding: 10}}>
+                   <Button
+                       className="add-row-button"
+                       onClick={handleAddRow}
+                       icon={<PlusOutlined color={'#fdfeff'} />}
+                       style={{backgroundColor:'#1E3045',color: '#fdfeff'}}
+                   >
+                       Add option
+                   </Button>
+                   {/* <Button */}
+                   {/*     className="save-button" */}
+                   {/*     onClick={() => { */}
+                   {/*         const newData = data.reduce((acc, item, index) => { */}
+                   {/*             let newObj = {} */}
+                   {/*             Object.keys(item).map((key) => { */}
+                   {/*                 if (key !== 'id' || key !== 'keyName') { */}
+                   {/*                     newObj[key] = { [`${id}.${item.keyName}`]: item[key] } */}
+                   {/*                 } */}
+                   {/*             }) */}
+                   {/*             acc = newObj */}
 
-                            return acc
-                        }, {})
-                    }}
-                >
-                    Save
-                </Button>
-            </Form.Item>
-        </Form>
+                   {/*             return acc */}
+                   {/*         }, {}) */}
+                   {/*     }} */}
+                   {/* > */}
+                   {/*     Save */}
+                   {/* </Button> */}
+               </Form.Item>
+           </Form>
+       </Wrapper>
     );
 }
 
