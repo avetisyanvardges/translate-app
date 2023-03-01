@@ -42,7 +42,7 @@ function useContainer({ setData, data }) {
 
   useEffect(() => {
     const newData = data.map((item) => {
-      if (item.en === trData.en) {
+      if (item.en === trData.en || item.ru === trData.ru || item.ge === trData.ge || item.hy === trData.hy) {
         return {
           ...item,
           ...trData,
@@ -80,7 +80,9 @@ function useContainer({ setData, data }) {
           })
           .catch((err) => console.error(err));
     }
-    await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: processText(enText)})
+    const keyNM = await processText(enText)
+    console.log(keyNM, "KEYYYYYYY")
+    await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: keyNM})
 
   }
 

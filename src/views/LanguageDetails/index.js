@@ -120,6 +120,7 @@ const  LanguageDetails = () => {
             newData.map((item, index)=>{
                Object.keys(item).map((key)=>{
                    if(key !== 'id' && key !== 'keyName'){
+                       console.log(item, "ITEM")
                        newObj[key] = !isEmpty(newObj[key]) ? {...newObj[key], [`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]} : {[`${id.trim().replaceAll(' ', '_').toLowerCase()}.${item.keyName}`]: item[key]}
                    }
                })
