@@ -81,7 +81,6 @@ function useContainer({ setData, data }) {
           .catch((err) => console.error(err));
     }
     const keyNM = await processText(enText)
-    console.log(keyNM, "KEYYYYYYY")
     await setTrData({ ...trData, en: enText, ru: ruText, ge: geText, hy: amText, keyName: keyNM})
 
   }
