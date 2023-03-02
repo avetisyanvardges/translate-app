@@ -1,5 +1,5 @@
 import {Button, Col, Form, Popconfirm, Row, Table, Typography} from 'antd';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import EditableCell from "./EditableCell";
 import './style.scss';
 import {DownloadOutlined, PlusOutlined, TranslationOutlined} from "@ant-design/icons";
@@ -20,7 +20,14 @@ const  LanguageDetails = () => {
     const [count, setCount] = useState(1)
     const isEditing = (record) => String(record.id) === editingKey;
 
+
+
     useEffect(()=>{
+        setData([])
+        fetchData()
+    }, [id])
+
+    const fetchData = useCallback(() => {
         const dbRef = ref(getDatabase());
         get(child(dbRef, `screens/${id.replaceAll('_', ' ')}`)).then((snapshot) => {
             if (snapshot.exists() && String(snapshot.val()) !== '{}') {
@@ -35,7 +42,7 @@ const  LanguageDetails = () => {
                     acc.push(obj);
                     return acc
                 },[])
-                setData([...data, ...newData])
+                setData([...newData])
                 setCount(newData.length+1)
             } else {
                 console.log("No data available");
@@ -45,6 +52,7 @@ const  LanguageDetails = () => {
             console.error(error);
         });
     }, [id])
+
 
     const edit = (record) => {
         console.log(record.id)
@@ -334,7 +342,7 @@ const  LanguageDetails = () => {
                    bordered
                    dataSource={data}
                    columns={mergedColumns}
-                   rowKey={'id'}
+                   rowKey={obj => obj.en}
                    rowClassName="editable-row"
                    pagination={false}
                />

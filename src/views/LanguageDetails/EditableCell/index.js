@@ -2,20 +2,21 @@ import {Col, Form, Input, Row} from "antd";
 import {memo, useRef} from "react";
 import {TranslationOutlined} from "@ant-design/icons";
 
-const EditableCell = memo(({
-                               editing,
-                               dataIndex,
-                               title,
-                               inputType,
-                               record,
-                               index,
-                               children,
-                               data,
-                               setData,
-                               handleTranslate,
-                               form,
-                               ...restProps
-                           }) => {
+const EditableCell = ({
+                          editing,
+                          dataIndex,
+                          title,
+                          inputType,
+                          record,
+                          index,
+                          children,
+                          data,
+                          setData,
+                          handleTranslate,
+                          form,
+                          ...restProps
+                      }) => {
+
     return (
         <td {...restProps}>
             {editing ? (
@@ -47,6 +48,6 @@ const EditableCell = memo(({
             )}
         </td>
     );
-});
+};
 
 export default EditableCell;
