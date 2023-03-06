@@ -3,11 +3,14 @@ import Wrapper from "../Wrapper";
 import './style.scss'
 
 
-
 // #8e969e
 // #1E3045
 // fdfeff
 // e3f4ff
+
+
+
+
 
 const Home = () => {
     return (

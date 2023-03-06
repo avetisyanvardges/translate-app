@@ -4,7 +4,7 @@ import EditableCell from "./EditableCell";
 import './style.scss';
 import {DownloadOutlined, PlusOutlined, TranslationOutlined} from "@ant-design/icons";
 import useContainer from "./hook";
-import {isEmpty, uniqueId} from "lodash";
+import {camelCase, isEmpty, uniqueId} from "lodash";
 import {child, get, getDatabase, ref, update} from "firebase/database";
 import Wrapper from "../Wrapper";
 
@@ -161,13 +161,14 @@ const  LanguageDetails = () => {
                 }
             })
         })
+        camelCase('sign_up.title')
         if(!isEmpty(mutationData[lang])) {
             const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-                JSON.stringify(mutationData[lang])
+                `export const ${camelCase(`${id.trim().replaceAll(' ', '_').toLowerCase()}_${lang}`)} = ${JSON.stringify(mutationData[lang])}`
             )}`;
             const link = document.createElement("a");
             link.href = jsonString;
-            link.download = `${id.trim().replaceAll(' ', '_').toLowerCase()}_${lang}.json`;
+            link.download = `${id.trim().replaceAll(' ', '_').toLowerCase()}_${lang}.js`;
 
             link.click();
         }
